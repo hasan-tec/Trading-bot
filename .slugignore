@@ -1,0 +1,8 @@
+/state/
+/test-state-*/
+/.git/
+/.env*
+/*.test.mjs
+/browser-check.mjs
+/browser-forward-check.mjs
+/artifacts/

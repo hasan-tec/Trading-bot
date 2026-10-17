@@ -1,0 +1,12 @@
+{
+  "name":"Binance Paper Lab",
+  "description":"Private BTC paper wallets, never real-money orders.",
+  "env":{
+    "NODE_ENV":{"value":"production"},
+    "APP_ORIGIN":{"description":"Your exact HTTPS Heroku app origin, without a path."},
+    "DASHBOARD_PASSWORD":{"description":"Private dashboard password (username paper).","generator":"secret"}
+  },
+  "formation":{"web":{"quantity":1,"size":"basic"}},
+  "addons":[{"plan":"heroku-postgresql:essential-0"}],
+  "buildpacks":[{"url":"heroku/nodejs"}]
+}

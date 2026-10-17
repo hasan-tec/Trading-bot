@@ -1,0 +1,22 @@
+{
+  "name": "binance-paper-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test",
+    "backtest": "node cli.mjs",
+    "test:browser": "node browser-check.mjs",
+    "test:browser:forward": "node browser-forward-check.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
+  }
+}
