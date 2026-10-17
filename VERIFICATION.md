@@ -34,3 +34,7 @@ The running home screen has three new wallets, a compact API, selected-wallet ch
 Heroku preparation includes private access, required persistent Postgres in hosted mode, a single-writer database lease, deployment manifest, source ignore rules and HEROKU.md. No Heroku CLI is installed here, no external repository was created and nothing was deployed. PostgreSQL queries were tested with pg-mem, not a real hosted database.
 
 A real local server restart preserved all three wallet balances/holdings, the experiment start time and the one-time benchmark trade without duplicates. Latest check returned RUNNING. Result: state/restart-check.json.
+
+## Heroku JSONB startup fix
+
+32 tests pass. Both legacy and forward configuration guards now compare object values rather than serialized key order. Regression tests load both saved documents with reversed configuration keys and existing holdings/trades, verify successful startup and no reset, and separately confirm that actual fee/allocation changes still fail without altering stored state. This addresses the Heroku startup error shown in the deployment logs.

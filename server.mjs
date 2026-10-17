@@ -1,5 +1,6 @@
 import {hostingConfig,authenticated} from './cloud.mjs';
 import {databaseStore} from './storage.mjs';
+import {isDeepStrictEqual} from 'node:util';
 import {createForward,advanceForward,forwardSnapshot,FORWARD_CONFIG} from './forward.mjs';
 import http from 'node:http';
 import {readFile} from 'node:fs/promises';
@@ -15,13 +16,14 @@ const config={symbol:'BTCUSDT',interval:'1h',kind:'ema',fast:9,slow:21,initialBa
 const stateDir=process.env.STATE_DIR||path.join(root,'state');
 const stateFile=path.join(stateDir,'paper.json'),historyFile=path.join(stateDir,'history.json');
 const saved=await readJson(stateFile,null);
-if(saved&&JSON.stringify(saved.config)!==JSON.stringify(config))throw Error('Saved paper configuration differs. Archive state before changing settings.');
+// JSONB can reorder object keys. Compare values, while still rejecting changed rules.
+if(saved&&!isDeepStrictEqual(saved.config,config))throw Error('Saved paper configuration differs. Archive state before changing settings.');
 let paper=saved?.paper||{cash:1000,quantity:0,entryCost:0,feesPaid:0,trades:[],equity:1000,price:null,paused:false,lastCandleTime:null,updatedAt:null,peakEquity:1000,day:null,dayStartEquity:1000,riskLocked:false};
 let report=await readJson(path.join(stateDir,'research.json'),null),status='CONNECTING',error=null,health={lastSuccess:null,failures:0},busy=false,ticking=false;
 const persist=()=>atomicJson(stateFile,{config,paper});
 const forwardFile=path.join(stateDir,'forward.json');
 let forward=await readJson(forwardFile,null);
-if(forward&&JSON.stringify(forward.config)!==JSON.stringify(FORWARD_CONFIG))throw Error('Forward experiment rules changed. Preserve the existing experiment before starting different rules.');
+if(forward&&!isDeepStrictEqual(forward.config,FORWARD_CONFIG))throw Error('Forward experiment rules changed. Preserve the existing experiment before starting different rules.');
 forward=forward||createForward();
 let forwardRows=[];
 const seed=await readJson(historyFile,null);

@@ -48,3 +48,7 @@ Dyno restarts and market outages can still create gaps. The bot records gaps lon
 Local automated tests cover PostgreSQL schema and JSON upsert/reload through a PostgreSQL emulator, private-access configuration and credentials, and duplicate-writer rejection. The local file-backed wallets and real Binance connection were exercised in the actual app. Desktop/mobile browser tests check wallet selection, chart switching and pause/resume.
 
 A real Heroku Postgres connection, TLS session, deployment-region feed access, and dyno restart must still be verified during deployment. No production deployment is claimed.
+
+## Troubleshooting: saved configuration differs
+
+Upgrade to the latest main branch if an earlier build reports a configuration mismatch immediately after a Postgres restart. PostgreSQL JSONB may reorder object keys. The corrected code compares configuration values independent of key order; it does not require deleting or resetting the database. Real changes to experiment fees/allocation still require a separately preserved experiment.
