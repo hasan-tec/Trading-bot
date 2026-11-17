@@ -38,3 +38,7 @@ A real local server restart preserved all three wallet balances/holdings, the ex
 ## Heroku JSONB startup fix
 
 32 tests pass. Both legacy and forward configuration guards now compare object values rather than serialized key order. Regression tests load both saved documents with reversed configuration keys and existing holdings/trades, verify successful startup and no reset, and separately confirm that actual fee/allocation changes still fail without altering stored state. This addresses the Heroku startup error shown in the deployment logs.
+
+## Gold market expansion — 17 November 2026
+33 tests passed. Live Binance ticker and 570-day historical downloads verified for BTCUSDT and PAXGUSDT. One-year gold results after assumed costs: EMA -6.04%, SMA -7.44%, trend-filter -5.94%, breakout +0.02%, combined -1.53%, 4h trend +0.43%, daily trend +0.46%, RSI/Bollinger +1.79%, market switch +0.16%. Small samples remain (daily: 6 closes; RSI: 26). Not XAU/USD results.
+Browser verified gold market selection, three distinct wallets, nine strategy rows, asset unit labels, chart switching and mobile width without runtime exceptions. Actual local API checks confirmed RUNNING for both markets, three wallets each and nine backtest rows each. Gold benchmark purchased once; trend wallets started flat. Existing BTC state was not reset.

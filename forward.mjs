@@ -4,7 +4,7 @@ import {aggregateClosed,candidateIndicators} from './candidates.mjs';
 export const FORWARD_CONFIG=Object.freeze({symbol:'BTCUSDT',initialBalance:1000,allocation:.2,fee:.001,slippage:.0005,version:1});
 const HOUR=3600000,OFFLINE_AFTER=90000;
 const SPECS=[{id:'slow4h',name:'4-hour trend',hours:4},{id:'slowDaily',name:'Daily trend',hours:24},{id:'hold',name:'Buy & hold',hours:null}];
-export function createForward(){return {version:1,config:FORWARD_CONFIG,startedAt:null,lastObservedAt:null,observedMs:0,offlineMs:0,gapCount:0,gaps:[],paused:false,price:null,priceHistory:[],wallets:SPECS.map(s=>({...s,cash:1000,quantity:0,entryCost:0,feesPaid:0,trades:[],equity:1000,peakEquity:1000,maxDrawdownPct:0,equityHistory:[],lastDecisionClose:null,nextDecisionAt:null,lastAction:'Waiting for market data',decisions:[],skippedEntries:0}))};}
+export function createForward(symbol='BTCUSDT'){return {version:1,config:symbol==='BTCUSDT'?FORWARD_CONFIG:{...FORWARD_CONFIG,symbol},startedAt:null,lastObservedAt:null,observedMs:0,offlineMs:0,gapCount:0,gaps:[],paused:false,price:null,priceHistory:[],wallets:SPECS.map(s=>({...s,cash:1000,quantity:0,entryCost:0,feesPaid:0,trades:[],equity:1000,peakEquity:1000,maxDrawdownPct:0,equityHistory:[],lastDecisionClose:null,nextDecisionAt:null,lastAction:'Waiting for market data',decisions:[],skippedEntries:0}))};}
 
 export function advanceForward(previous,rows,price,now=Date.now()){
  if(!Number.isFinite(price)||price<=0)throw Error('Invalid forward quote');
@@ -22,8 +22,8 @@ export function advanceForward(previous,rows,price,now=Date.now()){
  for(const wallet of state.wallets){
   let side='hold',reason=null,signalTime=null;
   if(wallet.id==='hold'){
-   if(wallet.trades.length===0&&!state.paused){side='buy';reason='Benchmark: buy BTC with 20% of starting funds, then hold.';}
-   wallet.lastAction=wallet.trades.length?'Holding BTC; no scheduled sells':state.paused?'Entries paused':'Waiting for first benchmark purchase';
+   if(wallet.trades.length===0&&!state.paused){side='buy';reason='Benchmark: buy asset with 20% of starting funds, then hold.';}
+   wallet.lastAction=wallet.trades.length?'Holding asset; no scheduled sells':state.paused?'Entries paused':'Waiting for first benchmark purchase';
   }else{
    const groups=aggregateClosed(rows,wallet.hours),last=groups.at(-1),values=candidateIndicators(groups.map(g=>g.row)),v=values.at(-1);
    if(!last||v.long===null)throw Error('Not enough completed daily/4h candles to warm indicators');
@@ -45,7 +45,7 @@ export function advanceForward(previous,rows,price,now=Date.now()){
    }
   }
   const count=wallet.trades.length;
-  Object.assign(wallet,execute(wallet,side,price,now,FORWARD_CONFIG));
+  Object.assign(wallet,execute(wallet,side,price,now,state.config));
   if(wallet.trades.length>count){const trade=wallet.trades.at(-1);Object.assign(trade,{reason,signalTime,walletId:wallet.id});wallet.lastAction=reason;}
   wallet.equity=wallet.cash+wallet.quantity*price;
   wallet.peakEquity=Math.max(wallet.peakEquity,wallet.equity);

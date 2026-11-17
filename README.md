@@ -29,3 +29,6 @@ Heroku preparation is in HEROKU.md. Hosted mode requires a database, private das
 npm test runs 29 tests. Optional real-browser checks require a dedicated hidden Chrome debugging session on port 9333: npm run test:browser:forward checks the simple dashboard; npm run test:browser checks the historical research page. Never use a personal Chrome profile for these checks.
 
 Storage queries are tested with a PostgreSQL emulator. A real hosted database, TLS session and Heroku deployment have not been exercised.
+
+## Gold and home-page results
+Select Bitcoin or Gold · PAXG on the home screen. PAXGUSDT is tokenized gold on Binance, not XAU/USD spot gold. Each market has three separate forward wallets (4h trend, daily trend, buy-and-hold), its own status and pause control. Existing BTC wallet state is preserved. Gold state uses gold-forward.json, gold-history.json and gold-summary.json in the same durable store. All nine historical strategies appear on the home page for the selected market, on a fixed 365-day window with 205 days of preceding warm-up. Summaries refresh daily while the app runs; errors never substitute synthetic data. All nine strategies are backtested, but only the two fixed trend strategies and the benchmark operate prospectively. Public data access must work from the deployment region.
