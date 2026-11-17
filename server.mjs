@@ -37,7 +37,7 @@ async function updateForward(rows,price){
  forward=advanceForward(forward,forwardRows,price,Date.now());await persistForward();
  if(forwardRows.length>=570*24&&(!btcSummary||Date.now()-btcSummary.createdAt>86400000)){btcSummary=marketSummary(forwardRows,'BTCUSDT');await atomicJson(path.join(stateDir,'btc-summary.json'),btcSummary);}
 }
-const gold=await goldService(stateDir);
+const gold=await goldService(stateDir,()=>forward.startedAt);
 let btcSummary=await readJson(path.join(stateDir,'btc-summary.json'),null);
 async function tick(){if(ticking)return;ticking=true;try{
   const raw=await publicGet('klines',{symbol:config.symbol,interval:'1h',limit:1000});const rows=validateCandles(raw);const last=rows.at(-1);
